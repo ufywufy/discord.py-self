@@ -53,7 +53,7 @@ To install, do the following:
 
 .. code:: sh
 
-    $ git clone https://github.com/voidpro-dev/discord.py-self
+    $ git clone https://github.com/lolinekord/discord.py-self
     $ cd discord.py-self
     $ python3 -m pip install -U .[voice]
 ..
@@ -62,7 +62,7 @@ or
 
 .. code:: sh
 
-    $ pip install git+https://github.com/voidpro-dev/discord.py-self.git
+    $ pip install git+https://github.com/lolinekord/discord.py-self.git
 ..
 
 Optional Packages
