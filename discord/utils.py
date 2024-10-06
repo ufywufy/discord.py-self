@@ -1439,54 +1439,25 @@ class ExpiringString(collections.UserString):
 
 
 async def _get_info(session: ClientSession, overwrite_properties:dict={}) -> Tuple[Dict[str, Any], str]:
-    #for _ in range(3):
-    #    try:
-    #        async with session.post('https://cordapi.dolfi.es/api/v2/properties/web', timeout=5) as resp:
-    #            json = await resp.json()
-    #            return json['properties'], json['encoded']
-    #    except Exception:
-    #        continue
-
-    # _log.warning('Info API down. Falling back to manual fetching...')
-    #ua = await _get_user_agent(session)
-    #bn = await _get_build_number(session)
-    #bv = _get_browser_version(ua)
-    properties = {
-        "os":"Windows",
-        "browser":"Discord Client",
-        "release_channel":"stable",
-        "client_version":"1.0.9054",
-        "os_version":"10.0.19045",
-        "os_arch":"x64",
-        "app_arch":"ia32",
-        "system_locale":"ja",
-        'browser_user_agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9054 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
-        "browser_version":"30.2.0",
-        "client_build_number": 312744,
-        "native_build_number": 49817,
+    properties = { 
+        "os": "Android",
+        "browser": "Discord Android",
+        "device": "Pixel, Pixel 6a",
+        "system_locale": "en-US",
+        "client_version": "208.17 - rn",
+        "release_channel": "googleRelease",
+        "device_vendor_id": "00000000-0000-0000-0000-000000000000",
+        "browser_user_agent": "",
+        "browser_version": "",
+        "os_version": "32",
+        "client_build_number": 208017,
         "client_event_source": None,
-    }
+        "design_id": 0
+    }  
+    # Changed headers for Android client
+    # This will help you avoid security scoring from Cloudflare and improve the quality of your account.
+
     properties.update(overwrite_properties)
-    #{"os":"Windows","browser":"Discord Client","release_channel":"stable","client_version":"1.0.9023","os_version":"10.0.19045","os_arch":"x64","app_arch":"ia32","system_locale":"ja","browser_user_agent":"","browser_version":"22.3.26","client_build_number":244874,"native_build_number":39515,"client_event_source":null}
-    """
-    properties2 = {
-        'os': 'windows',
-        'browser': 'Discord',
-        'device': 'desktop',
-        'browser_user_agent': ua,
-        'browser_version': bv,
-        'os_version': '10',
-        'referrer': '',
-        'referring_domain': '',
-        'referrer_current': '',
-        'referring_domain_current': '',
-        'release_channel': 'stable',
-        'system_locale': 'en-US',
-        'client_build_number': bn,
-        'client_event_source': None,
-        'design_id': 0,
-    }
-    """
     return properties, b64encode(_to_json(properties).encode()).decode('utf-8')
 
 

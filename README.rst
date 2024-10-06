@@ -43,6 +43,13 @@ Key Features
   - Billing (e.g. subscriptions, payments, boosts, promotions, etc.)  
   - Interactions (slash commands, buttons, etc.)  
 
+More changes from the voidpro-dev fork
+----------
+
+- Mimic traffic from Android clients (this will help you avoid scoring by Cloudflare and improve the quality of your account).
+- (TBD) We will further strengthen this by implementing science requests from specific Android clients.
+  Requests from Android clients are consistent across versions, unlike requests from browsers, making it difficult to identify them as self-bots.
+- And more!
 
 Installing
 ----------

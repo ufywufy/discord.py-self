@@ -647,16 +647,17 @@ class HTTPClient:
             'timeout': 30.0,
             'autoclose': False,
             'headers': {
-                'Accept-Language': 'en-US',
-                'Cache-Control': 'no-cache',
                 'Connection': 'Upgrade',
-                'Origin': 'https://discord.com',
                 'Pragma': 'no-cache',
-                'Sec-WebSocket-Extensions': 'permessage-deflate; client_max_window_bits',
-                'User-Agent': self.user_agent,
+                'Sec-WebSocket-Extensions': 'permessage-deflate',
+                'Host': 'gateway.discord.gg',
+                'Accept-Encoding': 'gzip',
+                'User-Agent': 'okhttp/4.9.2'
             },
             'compress': compress,
         }
+        # Changed headers for Android client
+        # This will help you avoid security scoring from Cloudflare and improve the quality of your account.
 
         return await self.__session.ws_connect(url, **kwargs)
 
@@ -710,28 +711,19 @@ class HTTPClient:
 
         ratelimit = self.get_ratelimit(key)
 
-        # Header creation
-        headers = {
-            'Accept': '*/*',
-            'Accept-Language': 'ja,en-US;q=0.9',
-            'Cache-Control': 'no-cache',
-            "Cookie": "locale=en-GB;",
-            'Connection': 'keep-alive',
-            'Origin': 'https://discord.com',
-            'Pragma': 'no-cache',
-            'Referer': 'https://discord.com/channels/@me',
-            'Sec-CH-UA': '"Not_A Brand";v="8", "Chromium";v="120"',
-            'Sec-CH-UA-Mobile': '?0',
-            'Sec-CH-UA-Platform': '"Windows"',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin',
-            'User-Agent': self.user_agent,
-            'X-Discord-Locale': "en-GB",
-            'X-Debug-Options': 'bugReporterEnabled',
+        headers = headers = {
             'X-Super-Properties': self.encoded_super_properties,
+            'Accept-Language': 'en-US;ja-JP;q=0.9;q=0.9',
+            # 'Cache-Control': 'no-cache',
+            # 'Pragma': 'no-cache',
+            'X-Discord-Locale': 'en-US',
+            'X-Discord-Timezone': 'Asia/Tokyo',
+            'X-Debug-Options': 'bugReporterEnabled',
+            'User-Agent': self.user_agent,
+            'Accept-Encoding': 'gzip'
         }
-        # This header isn't really necessary
+        # Changed headers for Android client
+        # This will help you avoid security scoring from Cloudflare and improve the quality of your account.
         # Timezones are annoying, so if it errors, we don't care
         try:
             from tzlocal import get_localzone_name
