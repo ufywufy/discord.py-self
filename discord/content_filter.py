@@ -1,4 +1,6 @@
 import re
+from typing import Union, Tuple
+
 
 age_patterns = {
     "English1": r"(im|i'm|iam)(\d{1,2}|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)",
@@ -43,7 +45,7 @@ age_patterns = {
     "Estonian": r'(\d{1,2}|üks|kaks|kolm|neli|viis|kuus|seitse|kaheksa|üheksa|kümme|üksteist|kaksteist)aastat',
     "Vietnamese": r'(\d{1,2}|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|mười một|mười hai)tuổi',
     "Mongolian": r'(\d{1,2}|нэг|хоёр|гурав|дөрөв|тав|зургаа|долоо|найм|ес|арав|арван нэг|арван хоёр)нас',
-    "Romani": r'(\d{1,2}|ek|duj|trin|štar|pandž|šeš|ifta|oxto|inija|deš|jekh|diklisi)vojb',
+    "Romani": r'(\d{1,2}|ek|duj|trin|štar|pandž|šeš|ifta|oxto|inija|deš|jekh|diklisi)vojb'
 }
 
 translation_table = str.maketrans(
@@ -51,32 +53,35 @@ translation_table = str.maketrans(
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ "
 )
 
-def _content_checker(content):
-    if not content:
+def _content_checker(check_content: str) -> Tuple[bool, Union[bool, str]]:
+    if not check_content:
         return False, False
-    check_content = str(content)
+    
     check_content = check_content.replace("||", "").replace("~~", "").replace("*", "")
+    
     check_contents = []
     contents = check_content.split("https://")
     check_contents.append(contents.pop(0))
+
     for check_content in contents:
         check_contents.append(" ".join(check_content.split(" ")[1:]))
+
     check_content =  " ".join(check_contents)
-    for lang,age_pattern in age_patterns.items():
-        check = re.findall(age_pattern, str(check_content).replace(" ", "").lower())
-        if check:
-            for a in check:
+    for lang, age_pattern in age_patterns.items():
+        checked = re.findall(age_pattern, str(check_content).replace(" ", "").lower())
+        if checked:
+            for check_result in checked:
                 try:
-                    if int(a[0]) < 13:
+                    if int(check_result[0]) < 13:
                         return True, lang
                 except:
                     try:
-                        if int(a[1]) < 13:
+                        if int(check_result[1]) < 13:
                             return True, lang
                     except:
                         return True, lang
-            return False, False
+    return False, False
 
-def check_age_content(content):
-    age_check, lang = _content_checker(content)
-    return content if not age_check else f"```ansi\n\x1b[1;31m[error]\x1b[1;0m Filtered Age words ({lang})\n```"
+def check_age_content(content: str) -> str:
+    age_check_result, lang = _content_checker(content)
+    return content if not age_check_result else f'The message was blocked by the "{lang}" content filter.'

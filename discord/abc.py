@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import copy
 import asyncio
-import re
 from datetime import datetime
 from typing import (
     Any,
@@ -61,7 +60,7 @@ from .sticker import GuildSticker, StickerItem
 from .settings import ChannelSettings
 from .commands import ApplicationCommand, BaseCommand, SlashCommand, UserCommand, MessageCommand, _command_factory
 from .flags import InviteFlags
-from . import utils, filter
+from . import utils, content_filter
 
 __all__ = (
     'Snowflake',
@@ -1830,7 +1829,8 @@ class Messageable:
         channel = await self._get_channel()
         state = self._state
         
-        content = filter.check_age_content(content)
+        if content is not None:
+            content = content_filter.check_age_content(content)
         previous_allowed_mention = state.allowed_mentions
 
         if nonce is MISSING:
