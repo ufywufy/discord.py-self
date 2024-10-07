@@ -1439,32 +1439,54 @@ class ExpiringString(collections.UserString):
 
 
 async def _get_info(session: ClientSession, overwrite_properties:dict={}) -> Tuple[Dict[str, Any], str]:
-    properties = { 
-        "os": "Android",
+    """
+    properties = {
         "browser": "Discord Android",
+        "browser_user_agent": "Discord-Android/126021",
+        "client_build_number": 126021,
+        "client_version": "126.21 - Stable",
         "device": "Pixel, Pixel 6a",
+        "os": "Android",
+        "os_sdk_version": "32",
+        "os_version": "12",
         "system_locale": "en-US",
-        "client_version": "208.17 - rn",
-        "release_channel": "googleRelease",
-        "device_vendor_id": "00000000-0000-0000-0000-000000000000",
-        "browser_user_agent": "",
-        "browser_version": "",
-        "os_version": "32",
-        "client_build_number": 208017,
-        "client_event_source": None,
-        "design_id": 0
-    }  
+        "device_advertiser_id": "00000000-0000-0000-0000-000000000000",
+        "client_performance_cpu": 4,
+        "client_performance_memory": 257731,
+        "cpu_core_count": 8,
+        "accessibility_support_enabled": false,
+        "accessibility_features": 256
+     }
     # Changed headers for Android client
     # This will help you avoid security scoring from Cloudflare and improve the quality of your account.
+    """
+
+    build_number = await _get_build_number(session)
+    native_build_number = await _get_native_build_number(session)
+    client_version = await _get_client_verison(session)
+    properties = {
+        "os": "Windows",
+        "browser": "Discord Client",
+        "release_channel": "stable",
+        "client_version": client_version,
+        "os_version": "10.0.19045",
+        "os_arch": "x64",
+        "app_arch": "x64",
+        "system_locale": "en-US",
+        "browser_user_agent": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/{client_version} Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+        "browser_version": "30.2.0",
+        "client_build_number": build_number,
+        "native_build_number": native_build_number,
+        "client_event_source": None
+    }
 
     properties.update(overwrite_properties)
     return properties, b64encode(_to_json(properties).encode()).decode('utf-8')
 
 
-async def _get_build_number(session: ClientSession) -> int:  # Thank you Discord-S.C.U.M
-    """Fetches client build number"""
+async def _get_build_number(session: ClientSession) -> int:
     try:
-        login_page_request = await session.get('https://discord.com/login', timeout=7)
+        login_page_request = await session.get('https://discord.com/app', timeout=7)
         login_page = await login_page_request.text()
         build_url = 'https://discord.com/assets/' + re.compile(r'assets/+([a-z0-9]+)\.js').findall(login_page)[-2] + '.js'
         build_request = await session.get(build_url, timeout=7)
@@ -1476,22 +1498,23 @@ async def _get_build_number(session: ClientSession) -> int:  # Thank you Discord
         return 256231
 
 
-async def _get_user_agent(session: ClientSession) -> str:
-    """Fetches the latest Windows 10/Chrome user-agent."""
-    try:
-        request = await session.request('GET', 'https://jnrbsn.github.io/user-agents/user-agents.json', timeout=7)
-        response = json.loads(await request.text())
-        return response[0]
-    except asyncio.TimeoutError:
-        _log.critical('Could not fetch user-agent. Falling back to hardcoded value...')
-        return (
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-        )
+async def _get_native_build_number(session: ClientSession) -> int:
+    res = await session.get(
+        "https://updates.discord.com/distributions/app/manifests/latest?install_id=0&channel=stable&platform=win&arch=x64",
+        headers={
+            "User-Agent": "Discord-Updater/1",
+            "Accept-Encoding": "gzip"
+        }
+    )
+    native_build_ver = await res.json()
+    return native_build_ver["metadata_version"]
 
 
-def _get_browser_version(user_agent: str) -> str:
-    """Fetches the latest Windows 10/Chrome version."""
-    return user_agent.split('Chrome/')[1].split()[0]
+async def _get_client_verison(session: ClientSession) -> str:
+    res = await session.get("https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64", allow_redirects=False)
+    main_varsion = res.headers["location"].split("/x64/")[1].split("/DiscordSetup.exe")[0]
+    return main_varsion
+
 
 
 def is_docker() -> bool:

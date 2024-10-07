@@ -635,7 +635,13 @@ class HTTPClient:
             )
         )
         self.super_properties, self.encoded_super_properties = sp, _ = await utils._get_info(session, self.overwrite_super_properties)
-        #_log.info('Found user agent %s, build number %s.', sp.get('browser_user_agent'), sp.get('client_build_number'))
+        _log.info(
+            'Found user agent: %s, build number: %s, client version: %s, native build number: %s.',
+            sp.get('browser_user_agent'),
+            sp.get('client_build_number'),
+            sp.get('client_version'),
+            sp.get('native_build_number')
+        )
 
         self._started = True
 
@@ -648,11 +654,10 @@ class HTTPClient:
             'autoclose': False,
             'headers': {
                 'Connection': 'Upgrade',
-                'Pragma': 'no-cache',
                 'Sec-WebSocket-Extensions': 'permessage-deflate',
                 'Host': 'gateway.discord.gg',
                 'Accept-Encoding': 'gzip',
-                'User-Agent': 'okhttp/4.9.2'
+                'User-Agent': 'okhttp/4.8.2'
             },
             'compress': compress,
         }
@@ -710,20 +715,39 @@ class HTTPClient:
             key = f'{bucket_hash}:{route.major_parameters}'
 
         ratelimit = self.get_ratelimit(key)
-
-        headers = headers = {
+        """
+        headers = {
             'X-Super-Properties': self.encoded_super_properties,
-            'Accept-Language': 'en-US;ja-JP;q=0.9;q=0.9',
+            'Accept-Language': 'en-US',
             # 'Cache-Control': 'no-cache',
             # 'Pragma': 'no-cache',
             'X-Discord-Locale': 'en-US',
-            'X-Discord-Timezone': 'Asia/Tokyo',
             'X-Debug-Options': 'bugReporterEnabled',
             'User-Agent': self.user_agent,
             'Accept-Encoding': 'gzip'
         }
         # Changed headers for Android client
         # This will help you avoid security scoring from Cloudflare and improve the quality of your account.
+        """
+
+        headers = {
+            'Accept': '*/*',
+            'Accept-Language': 'en-US',
+            'Cache-Control': 'no-cache',
+            "Cookie": "locale=en-US;",
+            'Connection': 'keep-alive',
+            'Origin': 'https://discord.com',
+            'Sec-CH-UA': '"Not_A Brand";v="24", "Chromium";v="124',
+            'Sec-CH-UA-Mobile': '?0',
+            'Sec-CH-UA-Platform': '"Windows"',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': self.user_agent,
+            'X-Discord-Locale': "en-US",
+            'X-Debug-Options': 'bugReporterEnabled',
+            'X-Super-Properties': self.encoded_super_properties,
+        }
         # Timezones are annoying, so if it errors, we don't care
         try:
             from tzlocal import get_localzone_name
