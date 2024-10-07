@@ -636,7 +636,7 @@ class HTTPClient:
         )
         self.super_properties, self.encoded_super_properties = sp, _ = await utils._get_info(session, self.overwrite_super_properties)
         _log.info(
-            'Found user agent: %s, build number: %s, client version: %s, native build number: %s.',
+            'useragent: %s, buildnumber: %s, clientversion: %s, nativebuildnumber: %s.',
             sp.get('browser_user_agent'),
             sp.get('client_build_number'),
             sp.get('client_version'),
@@ -657,7 +657,8 @@ class HTTPClient:
                 'Sec-WebSocket-Extensions': 'permessage-deflate',
                 'Host': 'gateway.discord.gg',
                 'Accept-Encoding': 'gzip',
-                'User-Agent': 'okhttp/4.8.2'
+                # 'User-Agent': 'okhttp/4.8.2'
+                'User-Agent': self.user_agent
             },
             'compress': compress,
         }
