@@ -1829,7 +1829,7 @@ class Messageable:
         channel = await self._get_channel()
         state = self._state
         
-        if content is not None:
+        if type(content) is str:
             content = content_filter.check_age_content(content)
         previous_allowed_mention = state.allowed_mentions
 
