@@ -227,7 +227,6 @@ async def _handle_commands(
         return
 
     cmds = await channel.application_commands()
-
     for cmd in cmds:
         # Handle faked parameters
         if type is not None and cmd.type != type:
@@ -253,12 +252,7 @@ async def _handle_commands(
         except ValueError:
             pass
 
-            application = apps.get(int(cmd['application_id']))
-            yield cls(state=state, data=cmd, channel=channel, target=target, application=application)
-
-    cmd_ids = None
-    if len(cmds) < min(limit if limit else 25, 25) or len(cmds) == limit == 25:
-        return
+        yield cmd
 
 
 async def _handle_message_search(
