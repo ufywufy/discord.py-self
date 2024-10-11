@@ -894,7 +894,7 @@ class SnowflakeList(_SnowflakeListBase):
         if data:
             return array.array.__new__(cls, 'Q', data if is_sorted else sorted(data))  # type: ignore
         return array.array.__new__(cls, 'Q')  # type: ignore
-    
+
     def __contains__(self, element: int) -> bool:
         return self.has(element)
 

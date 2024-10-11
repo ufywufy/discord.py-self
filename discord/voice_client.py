@@ -667,16 +667,7 @@ class VoiceClient(VoiceProtocol):
 
         self._player._set_source(value)
 
-    def get_audio_packet(self, data: bytes) -> None:
-        self.checked_add('sequence', 1, 65535)
-        #if encode:
-        #    encoded_data = self.encoder.encode(data, self.encoder.SAMPLES_PER_FRAME)
-        #else:
-        #    encoded_data = data
-        packet = self._get_voice_packet(data)
-        self.checked_add('timestamp', opus.Encoder.SAMPLES_PER_FRAME, 4294967295)
-    
-    def send_audio_packet(self, data: bytes) -> None:
+    def send_audio_packet(self, data: bytes, *, encode: bool = True) -> None:
         """Sends an audio packet composed of the data.
 
         You must be connected to play audio.
@@ -696,8 +687,15 @@ class VoiceClient(VoiceProtocol):
             Encoding the data failed.
         """
 
+        self.checked_add('sequence', 1, 65535)
+        if encode:
+            encoded_data = self.encoder.encode(data, self.encoder.SAMPLES_PER_FRAME)
+        else:
+            encoded_data = data
+        packet = self._get_voice_packet(encoded_data)
         try:
             self.socket.sendto(packet, (self.endpoint_ip, self.voice_port))
         except BlockingIOError:
             _log.warning('A packet has been dropped (seq: %s, timestamp: %s)', self.sequence, self.timestamp)
 
+        self.checked_add('timestamp', opus.Encoder.SAMPLES_PER_FRAME, 4294967295)

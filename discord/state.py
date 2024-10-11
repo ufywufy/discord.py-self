@@ -538,7 +538,7 @@ class GuildSubscriptions:
         self._threads: utils.SnowflakeList = utils.SnowflakeList()
         self._activities: utils.SnowflakeList = utils.SnowflakeList()  # TODO: wtf does this do
         self._member_updates: utils.SnowflakeList = utils.SnowflakeList()
-        
+
         # Member subscriptions
         self._members: Dict[int, utils.SnowflakeList] = {}
         self._thread_member_lists: Dict[int, utils.SnowflakeList] = {}
@@ -550,12 +550,12 @@ class GuildSubscriptions:
         for guild in guilds:
             if guild._member_count and guild._member_count < 75000:
                 self._subscribed.add(guild.id)
-        
+
     def _cancel(self) -> None:
         if self._task:
             self._task.cancel()
             self._task = None
-    
+
     async def _tick_task(self) -> None:
         try:
             await asyncio.sleep(self.TICK_TIMEOUT)
@@ -563,20 +563,20 @@ class GuildSubscriptions:
             self._task = None
         except asyncio.CancelledError:
             pass
-    
+
     def _tick(self) -> None:
         self._cancel()
         if not self._blocked:
             self._task = self._state.loop.create_task(self._tick_task())
-    
+
     @property
     def empty(self) -> bool:
         return not self._subscribed and not self._pending
-    
+
     @property
     def blocked(self) -> bool:
         return self._blocked
-    
+
     @blocked.setter
     def blocked(self, value: bool, /) -> None:
         if self._blocked == value:
@@ -586,7 +586,7 @@ class GuildSubscriptions:
             self._cancel()
         else:
             self._tick()
-    
+
     async def _requeue_subscriptions(self):
         # We need to send all our subscriptions again if we reconnect
         pending = self._pending
@@ -603,7 +603,7 @@ class GuildSubscriptions:
         for guild_id in self._state._guilds:
             if guild_id not in subscribed:
                 continue
-            
+
             key = str(guild_id)
             payload: gw.BaseGuildSubscribePayload = {
                 # Ensure we are subscribed to the guild
@@ -619,14 +619,14 @@ class GuildSubscriptions:
                 payload.update(pending[key])
             if payload:
                 await self._checked_add({key: payload})
-            
+
     def is_subscribed(self, guild: abcSnowflake, /) -> bool:
         return guild.id in self._subscribed
-    
+
     def _is_pending_subscribe(self, guild_id: int, /) -> bool:
         key = str(guild_id)
         return guild_id in self._subscribed or (key in self._pending and self._pending[key].get('typing') is True)
-    
+
     def has_feature(
         self, guild: abcSnowflake, feature: Literal['typing', 'threads', 'activities', 'member_updates'], /
     ) -> bool:
@@ -639,16 +639,16 @@ class GuildSubscriptions:
             return self._activities.has(guild.id)
         elif feature == 'member_updates':
             return self._member_updates.has(guild.id)
-        
+
     def members_for(self, guild: abcSnowflake, /) -> Sequence[int]:
         return utils.SequenceProxy(self._members.get(guild.id, ()))
-    
+
     def threads_for(self, guild: abcSnowflake, /) -> Sequence[int]:
         return utils.SequenceProxy(self._thread_member_lists.get(guild.id, ()))
-    
+
     def channels_for(self, guild: abcSnowflake, /) -> Dict[int, List[Tuple[int, int]]]:
         return self._channels.get(guild.id, {}).copy()
-    
+
     async def _checked_add(self, changes: gw.BulkGuildSubscribePayload, /) -> None:
         # n.b. changes should have a single key
         # We need to check if the new payload is larger than MAX_PAYLOAD_SIZE bytes
@@ -665,6 +665,7 @@ class GuildSubscriptions:
                 raise ValueError('Guild subscription payload too large to send')
             await self._flush()
             self._pending = changes
+        else:
             self._pending = new_payload
 
         self._tick()
@@ -673,7 +674,7 @@ class GuildSubscriptions:
         payload = self._pending
         if not payload:
             return
-        
+
         # Only keys that are present in the payload are updated on the backend
         await self._state.ws.bulk_guild_subscribe(payload)
         self._pending = {}
@@ -723,7 +724,7 @@ class GuildSubscriptions:
                 typing = True
             if not typing:
                 raise TypeError('Cannot subscribe to guild without subscribing to typing')
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         if typing is not MISSING:
             payload['typing'] = typing
@@ -733,25 +734,25 @@ class GuildSubscriptions:
             payload['activities'] = activities
         if member_updates is not MISSING:
             payload['member_updates'] = member_updates
-        
+
         if payload:
             await self._checked_add({str(guild.id): payload})
-        
+
     async def subscribe_to_members(self, guild: abcSnowflake, /, *members: abcSnowflake, replace: bool = False) -> None:
         if not replace and not members:
             return
-        
+
         # Sanity check
         if not self._is_pending_subscribe(guild.id):
             raise TypeError('Cannot subscribe to guild without subscribing to typing')
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         values: Set[Snowflake] = {member.id for member in members}
         if not replace:
             existing = self._members.get(guild.id)
             if existing:
                 values.update(existing)
-        
+
         payload['members'] = list(values)
         await self._checked_add({str(guild.id): payload})
 
@@ -759,7 +760,7 @@ class GuildSubscriptions:
         # Sanity check
         if not self._is_pending_subscribe(guild.id):
             return
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         existing = self._members.get(guild.id)
         to_remove = [member.id for member in members]
@@ -771,18 +772,18 @@ class GuildSubscriptions:
     async def subscribe_to_threads(self, guild: abcSnowflake, /, *threads: abcSnowflake, replace: bool = False) -> None:
         if not replace and not threads:
             return
-        
+
         # Sanity check
         if not self._is_pending_subscribe(guild.id):
             raise TypeError('Cannot subscribe to guild without subscribing to typing')
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         values: set[Snowflake] = {thread.id for thread in threads}
         if not replace:
             existing = self._thread_member_lists.get(guild.id)
             if existing:
                 values.update(existing)
-        
+
         payload['thread_member_lists'] = list(values)
         await self._checked_add({str(guild.id): payload})
 
@@ -790,7 +791,7 @@ class GuildSubscriptions:
         # Sanity check
         if not self._is_pending_subscribe(guild.id):
             return
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         existing = self._thread_member_lists.get(guild.id)
         to_remove = [thread.id for thread in threads]
@@ -804,21 +805,21 @@ class GuildSubscriptions:
     ) -> None:
         if not replace and not channels:
             return
-        
+
         # Sanity check
         if not self._is_pending_subscribe(guild.id):
             raise TypeError('Cannot subscribe to guild without subscribing to typing')
-        
+
         payload: gw.BaseGuildSubscribePayload = {}
         values = channels.copy()
         if not replace:
             existing = self._channels.get(guild.id)
             if existing:
                 values = {**existing, **channels}
-        
+
         for channel_id, ranges in channels.items():
             values[channel_id] = ranges
-        
+
         payload['channels'] = values
         await self._checked_add({str(guild.id): payload})
 
