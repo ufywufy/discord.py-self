@@ -54,8 +54,7 @@ import datetime
 
 import aiohttp
 import traceback
-
-from .enums import RelationshipAction, InviteType
+from .enums import NetworkConnectionType, RelationshipAction, InviteType
 from .errors import (
     HTTPException,
     RateLimited,
@@ -240,6 +239,7 @@ def handle_message_parameters(
     previous_allowed_mentions: Optional[AllowedMentions] = None,
     mention_author: Optional[bool] = None,
     thread_name: str = MISSING,
+    network_type: NetworkConnectionType = MISSING,
     channel_payload: Dict[str, Any] = MISSING,
 ) -> MultipartParameters:
     if files is not MISSING and file is not MISSING:
@@ -296,6 +296,9 @@ def handle_message_parameters(
     if thread_name is not MISSING:
         payload['thread_name'] = thread_name
 
+    if network_type is not MISSING:
+        payload['mobile_network_type'] = str(network_type)
+        
     if allowed_mentions:
         if previous_allowed_mentions is not None:
             payload['allowed_mentions'] = previous_allowed_mentions.merge(allowed_mentions).to_dict()

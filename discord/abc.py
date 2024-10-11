@@ -47,7 +47,7 @@ from typing import (
 
 from .object import OLDEST_OBJECT, Object
 from .context_managers import Typing
-from .enums import ApplicationCommandType, ChannelType, InviteTarget
+from .enums import ApplicationCommandType, ChannelType, InviteTarget, NetworkConnectionType
 from .errors import ClientException
 from .mentions import AllowedMentions
 from .permissions import PermissionOverwrite, Permissions
@@ -1870,6 +1870,7 @@ class Messageable:
             mention_author=mention_author,
             stickers=sticker_ids,
             flags=flags,
+            network_type=NetworkConnectionType.unknown,
         ) as params:
             data = await state.http.send_message(channel.id, params=params)
 
