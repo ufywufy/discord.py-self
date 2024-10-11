@@ -282,7 +282,7 @@ class BaseUser(_UserTag):
         )
 
     def __str__(self) -> str:
-        if self.discriminator == '0':
+        if self.is_pomelo():
             return self.name
         return f'{self.name}#{self.discriminator}'
 
@@ -380,7 +380,7 @@ class BaseUser(_UserTag):
     @property
     def default_avatar(self) -> Asset:
         """:class:`Asset`: Returns the default avatar for a given user."""
-        if self.discriminator == '0':
+        if self.is_pomelo():
             avatar_id = (self.id >> 22) % 6
         else:
             avatar_id = int(self.discriminator) % 5
@@ -561,7 +561,7 @@ class BaseUser(_UserTag):
 
         .. versionadded:: 2.1
         """
-        return self.discriminator == '0'
+        return int(self.discriminator) == 0
 
     @property
     def relationship(self) -> Optional[Relationship]:
@@ -1066,7 +1066,7 @@ class User(BaseUser, discord.abc.Connectable, discord.abc.Messageable):
         .. note::
         
             This information is only available in certain contexts.
-            
+
         .. versionadded:: 2.1
     """
 
