@@ -480,7 +480,7 @@ class User(Snowflake, Protocol):
         """
         raise NotImplementedError
     
-    s@property
+    @property
     def avatar_decoration_sku_id(self) -> Optional[int]:
         """Optional[:class:`int`]: Returns the SKU ID of the user's avatar decoration, if present.
         .. versionadded:: 2.1
