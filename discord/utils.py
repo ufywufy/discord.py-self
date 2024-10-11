@@ -1493,19 +1493,26 @@ async def _get_info(session: ClientSession, overwrite_properties:dict={}) -> Tup
     properties.update(overwrite_properties)
     return properties, b64encode(_to_json(properties).encode()).decode('utf-8')
 
+FALLBACK_BUILD_NUMBER = 9999
+FALLBACK_BROWSER_VERSION = '125.0.0.0'
+_CLIENT_ASSET_REGEX = re.compile(r'assets/([a-z0-9.]+)\.js')
+_BUILD_NUMBER_REGEX = re.compile(r'build_number:"(\d+)"')
+
 
 async def _get_build_number(session: ClientSession) -> int:
-    try:
-        login_page_request = await session.get('https://discord.com/app', timeout=7)
-        login_page = await login_page_request.text()
-        build_url = 'https://discord.com/assets/' + re.compile(r'assets/+([a-z0-9]+)\.js').findall(login_page)[-2] + '.js'
-        build_request = await session.get(build_url, timeout=7)
-        build_file = await build_request.text()
-        build_index = build_file.find('buildNumber') + 24
-        return int(build_file[build_index : build_index + 6])
-    except:
-        # _log.critical('Could not fetch client build number. Falling back to hardcoded value...')
-        return 256231
+    async with session.get('https://discord.com/login') as resp:
+        app = await resp.text()
+        assets = _CLIENT_ASSET_REGEX.findall(app)
+        if not assets:
+            raise RuntimeError('Could not find client asset files')
+    for asset in assets[::-1]:
+        async with session.get(f'https://discord.com/assets/{asset}.js') as resp:
+            build = await resp.text()
+            match = _BUILD_NUMBER_REGEX.search(build)
+            if match is None:
+                continue
+            return int(match.group(1))
+    raise RuntimeError('Could not find client build number')
 
 
 async def _get_native_build_number(session: ClientSession) -> int:

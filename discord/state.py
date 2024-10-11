@@ -1462,9 +1462,7 @@ class ConnectionState:
                         to_chunk.append(guild.id)
                         states.append((guild, future))
                     elif not guild._offline_members_hidden:
-                        request = MemberSidebar(
-                            guild, MISSING, chunk=True, cache=True, loop=self.loop, delay=0
-                        )
+                        request = MemberSidebar(guild, MISSING, chunk=True, cache=True, loop=self.loop, delay=0)
                         if not request.channels:
                             # Not possible to scrape here
                             continue
