@@ -118,6 +118,7 @@ class ContentRating(TypedDict):
     rating: int
     descriptors: List[int]
 
+
 SKUType = Literal[1, 2, 3, 4, 5, 6]
 
 
@@ -133,7 +134,6 @@ class BaseSKU(PartialSKU):
     id: Snowflake
     type: SKUType
     product_line: Optional[Literal[1, 2, 3, 4, 5, 6, 7]]
-    type: Literal[1, 2, 3, 4, 5, 6]
     name: LOCALIZED_STR
     summary: NotRequired[LOCALIZED_STR]
     legal_notice: NotRequired[LOCALIZED_STR]

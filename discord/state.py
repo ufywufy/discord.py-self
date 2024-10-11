@@ -798,7 +798,7 @@ class GuildSubscriptions:
         if existing:
             payload['thread_member_lists'] = [thread for thread in existing if thread not in to_remove]
         await self._checked_add({str(guild.id): payload})
-        
+
     async def subscribe_to_channels(
         self, guild: abcSnowflake, /, channels: Dict[Snowflake, List[Tuple[int, int]]], replace: bool = False
     ) -> None:
@@ -2513,7 +2513,7 @@ class ConnectionState:
         if guild is None:
             _log.debug('GUILD_MEMBER_UPDATE referencing an unknown guild ID: %s. Discarding.', data['guild_id'])
             return
-        
+
         self._handle_member_update(guild, data)
 
     def parse_guild_member_list_update(self, data: gw.GuildMemberListUpdateEvent) -> None:
@@ -2570,22 +2570,6 @@ class ConnectionState:
                         member._presence_update(mdata['presence'], empty_tuple)
 
                     members.append(member)
-
-
-                    user_update = member._user._update_self(user)
-                    if user_update:
-                        self.dispatch('user_update', user_update[0], user_update[1])
-
-                    if should_parse and dispatch:
-                        self.dispatch('member_update', old_member, member)
-
-                    disregard.append(member)
-                else:
-                    member = Member(data=mdata, guild=guild, state=self)
-                    if mdata.get('presence') is not None:
-                        member._presence_update(mdata['presence'], empty_tuple)
-
-                    to_add.append(member)
                     # guild._member_list.append(member) if should_parse else None
 
             # elif opdata['op'] == 'INSERT':
@@ -2671,7 +2655,6 @@ class ConnectionState:
 
             #         if should_parse and dispatch:
             #             self.dispatch('member_update', old_member, member)
-
             #     else:
             #         _log.debug(
             #             'GUILD_MEMBER_LIST_UPDATE type UPDATE referencing an unknown member ID %s index %s in %s. Discarding.',
@@ -2731,6 +2714,7 @@ class ConnectionState:
                 data['guild_id'],
             )
             return
+        
         self.dispatch('application_command_index_update', guild)
 
     def parse_guild_emojis_update(self, data: gw.GuildEmojisUpdateEvent) -> None:

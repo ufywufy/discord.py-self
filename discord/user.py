@@ -307,7 +307,7 @@ class BaseUser(_UserTag):
         self.premium_type = try_enum(PremiumType, data['premium_type'] or 0) if 'premium_type' in data else None
         self.bot = data.get('bot', False)
         self.system = data.get('system', False)
-    
+
         decoration_data = data.get('avatar_decoration_data')
         self._avatar_decoration = decoration_data.get('asset') if decoration_data else None
         self._avatar_decoration_sku_id = _get_as_snowflake(decoration_data, 'sku_id') if decoration_data else None
@@ -424,7 +424,7 @@ class BaseUser(_UserTag):
         .. versionadded:: 2.1
         """
         return self._avatar_decoration_sku_id
-    
+
     @property
     def banner(self) -> Optional[Asset]:
         """Optional[:class:`Asset`]: Returns the user's banner asset, if available.
@@ -801,7 +801,6 @@ class ClientUser(BaseUser):
         """:class:`Locale`: The IETF language tag used to identify the language the user is using."""
         return self._state.settings.locale if self._state.settings else try_enum(Locale, self._locale)
 
-
     @property
     def flags(self) -> PrivateUserFlags:
         """:class:`PrivateUserFlags`: Returns the user's flags (including private).
@@ -1065,7 +1064,7 @@ class User(BaseUser, discord.abc.Connectable, discord.abc.Messageable):
         Specifies the type of premium a user has (i.e. Nitro, Nitro Classic, or Nitro Basic).
 
         .. note::
-        
+
             This information is only available in certain contexts.
 
         .. versionadded:: 2.1

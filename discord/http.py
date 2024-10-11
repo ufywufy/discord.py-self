@@ -53,7 +53,7 @@ from collections import deque
 import datetime
 
 import aiohttp
-import traceback
+
 from .enums import NetworkConnectionType, RelationshipAction, InviteType
 from .errors import (
     HTTPException,
@@ -575,7 +575,7 @@ class HTTPClient:
         self,
         connector: Optional[aiohttp.BaseConnector] = None,
         *,
-        super_properties:Optional[dict] = {},
+        super_properties: Optional[dict] = {},
         proxy: Optional[str] = None,
         proxy_auth: Optional[aiohttp.BasicAuth] = None,
         unsync_clock: bool = True,
@@ -3604,7 +3604,7 @@ class HTTPClient:
         payment_source_id: Optional[Snowflake] = None,
         include_unpublished: bool = False,
         revenue_surface: Optional[int] = None,
-    ) -> Response[List[store.PublicStoreListing]]:
+    ) -> Response[List[subscriptions.SubscriptionPlan]]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3624,7 +3624,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[int] = None,
         localize: bool = True,
-    ) -> Response[store.PublicStoreListing]:
+    ) -> Response[List[store.PublicStoreListing]]:
         params = {'application_id': app_id}
         if country_code:
             params['country_code'] = country_code
@@ -3662,7 +3662,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[Snowflake] = None,
         localize: bool = True,
-    ) -> Response[store.PublicStoreListing]:
+    ) -> Response[List[store.PublicStoreListing]]:
         params: Dict[str, Any] = {'application_ids': app_ids}
         if country_code:
             params['country_code'] = country_code
