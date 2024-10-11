@@ -1356,12 +1356,12 @@ class ConnectionState:
             except NotFound:
                 pass
 
-        def subscribe_guild(
-            self, guild: Guild, typing: bool = True, activities: bool = True, threads: bool = True, member_updates: bool = True
-        ) -> Coroutine:
-            return self.subscriptions.subscribe_to(
-                guild, typing=typing, activities=activities, threads=threads, member_updates=member_updates
-            )
+    def subscribe_guild(
+        self, guild: Guild, typing: bool = True, activities: bool = True, threads: bool = True, member_updates: bool = True
+    ) -> Coroutine:
+        return self.subscriptions.subscribe_to(
+            guild, typing=typing, activities=activities, threads=threads, member_updates=member_updates
+        )
 
     def chunker(
         self,
