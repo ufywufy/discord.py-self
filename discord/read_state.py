@@ -188,7 +188,7 @@ class ReadState:
         if self.type == ReadStateType.channel:
             return resource.last_message_id or 0  # type: ignore
         elif self.type == ReadStateType.scheduled_events:
-            return max(resource.scheduled_events, key=lambda e: e.id).id  # type: ignore
+            return max(resource.scheduled_events, key=attrgetter('id')).id  # type: ignore
         return 0
 
     @property

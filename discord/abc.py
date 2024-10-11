@@ -26,6 +26,7 @@ from __future__ import annotations
 import copy
 import asyncio
 from datetime import datetime
+from operator import attrgetter
 from typing import (
     Any,
     AsyncIterator,
@@ -662,7 +663,7 @@ class GuildChannel:
         bucket = self._sorting_bucket
         channels: List[GuildChannel] = [c for c in self.guild.channels if c._sorting_bucket == bucket]
 
-        channels.sort(key=lambda c: c.position)
+        channels.sort(key=attrgetter('position'))
 
         try:
             # remove ourselves from the channel list
@@ -1432,7 +1433,7 @@ class GuildChannel:
             ]
         # fmt: on
 
-        channels.sort(key=lambda c: (c.position, c.id))
+        channels.sort(key=attrgetter('position', 'id'))
 
         try:
             # Try to remove ourselves from the channel list
