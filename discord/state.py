@@ -798,6 +798,7 @@ class GuildSubscriptions:
         if existing:
             payload['thread_member_lists'] = [thread for thread in existing if thread not in to_remove]
         await self._checked_add({str(guild.id): payload})
+        
     async def subscribe_to_channels(
         self, guild: abcSnowflake, /, channels: Dict[Snowflake, List[Tuple[int, int]]], replace: bool = False
     ) -> None:

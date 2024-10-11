@@ -37,7 +37,6 @@ class PartialUser(TypedDict):
     avatar: Optional[str]
     avatar_decoration_data: NotRequired[Optional[UserAvatarDecorationData]]
     public_flags: NotRequired[int]
-    public_flags: NotRequired[int]
     bot: NotRequired[bool]
     system: NotRequired[bool]
     global_name: Optional[str]

@@ -483,6 +483,7 @@ class User(Snowflake, Protocol):
     @property
     def avatar_decoration_sku_id(self) -> Optional[int]:
         """Optional[:class:`int`]: Returns the SKU ID of the user's avatar decoration, if present.
+
         .. versionadded:: 2.1
         """
         raise NotImplementedError
@@ -2483,7 +2484,7 @@ class Messageable:
         application: Optional[:class:`~discord.abc.Snowflake`]
             Whether to return this application's commands. Always set to DM recipient in a private channel context.
         with_applications: :class:`bool`
-            Whether to include applications in the response. Defaults to ``True``.
+            Whether to include applications in the response.
 
         Raises
         ------

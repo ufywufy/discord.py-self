@@ -941,8 +941,6 @@ class SKUPrice:
         self.amount: int = data.get('amount', 0)
         self.sale_amount: Optional[int] = data.get('sale_amount')
         self.sale_percentage: int = data.get('sale_percentage', 0)
-        self.premium = data.get('premium')
-        self.exponent: Optional[int] = data.get('exponent')
         self.exponent: int = data.get('exponent', data.get('currency_exponent', 0))
         self.premium: Dict[PremiumType, SKUPrice] = {
             try_enum(PremiumType, premium_type): SKUPrice.from_premium(self, premium_data)

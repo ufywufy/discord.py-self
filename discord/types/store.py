@@ -157,7 +157,6 @@ class BaseSKU(PartialSKU):
     exclusive: NotRequired[bool]
     deleted: NotRequired[bool]
     show_age_gate: bool
-    bundled_skus: NotRequired[List[SKU]]
     manifest_labels: Optional[List[Snowflake]]
 
 

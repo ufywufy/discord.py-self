@@ -2073,7 +2073,6 @@ class Client:
         HTTPException
             Leaving the guild failed.
         """
-        lurking = lurking if lurking is not MISSING else MISSING
         if lurking is MISSING:
             attr = getattr(guild, 'joined', lurking)
             if attr is not MISSING:
@@ -5379,6 +5378,7 @@ class Client:
         ------
         HTTPException
             Joining the hub or requesting the verification code failed.
+
         Returns
         --------
         Optional[:class:`.Guild`]

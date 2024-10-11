@@ -321,6 +321,7 @@ class BaseUser(_UserTag):
         self.discriminator = user.discriminator
         self.global_name = user.global_name
         self._avatar = user._avatar
+        self._avatar_decoration = user._avatar_decoration
         self._avatar_decoration_sku_id = user._avatar_decoration_sku_id
         self._banner = user._banner
         self._accent_colour = user._accent_colour
@@ -1093,7 +1094,6 @@ class User(BaseUser, discord.abc.Connectable, discord.abc.Messageable):
             self._avatar_decoration,
             self.global_name,
         )
-        # These keys seem to always be available
         modified = (
             user['username'],
             user.get('avatar'),
