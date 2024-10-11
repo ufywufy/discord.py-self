@@ -1741,6 +1741,9 @@ class Client:
             status = self.client_status
         if status is Status.offline:
             status = Status.invisible
+
+        if afk is MISSING:
+            afk = self.ws.afk if self.ws else False
         
         if afk is MISSING:
             afk = self.ws.afk if self.ws else False
