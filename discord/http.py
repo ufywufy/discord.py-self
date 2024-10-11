@@ -3111,7 +3111,7 @@ class HTTPClient:
         payment_source_id: Optional[Snowflake] = None,
         localize: bool = True,
         with_bundled_skus: bool = True,
-    ) -> Response[List[store.SKU]]:
+    ) -> Response[List[store.PrivateSKU]]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3126,7 +3126,7 @@ class HTTPClient:
             Route('GET', '/applications/{app_id}/skus', app_id=app_id), params=params, super_properties_to_track=True
         )
 
-    def create_sku(self, payload: dict) -> Response[store.SKU]:
+    def create_sku(self, payload: dict) -> Response[store.PrivateSKU]:
         return self.request(Route('POST', '/store/skus'), json=payload, super_properties_to_track=True)
 
     def get_app_discoverability(self, app_id: Snowflake) -> Response[application.ApplicationDiscoverability]:
@@ -3546,7 +3546,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[Snowflake] = None,
         localize: bool = True,
-    ) -> Response[store.StoreListing]:
+    ) -> Response[store.PublicStoreListing]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3564,7 +3564,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[int] = None,
         localize: bool = True,
-    ) -> Response[List[store.StoreListing]]:
+    ) -> Response[List[store.PrivateStoreListing]]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3604,7 +3604,7 @@ class HTTPClient:
         payment_source_id: Optional[Snowflake] = None,
         include_unpublished: bool = False,
         revenue_surface: Optional[int] = None,
-    ) -> Response[List[subscriptions.SubscriptionPlan]]:
+    ) -> Response[List[store.PublicStoreListing]]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3624,7 +3624,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[int] = None,
         localize: bool = True,
-    ) -> Response[List[store.StoreListing]]:
+    ) -> Response[store.PublicStoreListing]:
         params = {'application_id': app_id}
         if country_code:
             params['country_code'] = country_code
@@ -3642,7 +3642,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[int] = None,
         localize: bool = True,
-    ) -> Response[store.StoreListing]:
+    ) -> Response[store.PublicStoreListing]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3662,7 +3662,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[Snowflake] = None,
         localize: bool = True,
-    ) -> Response[List[store.StoreListing]]:
+    ) -> Response[store.PublicStoreListing]:
         params: Dict[str, Any] = {'application_ids': app_ids}
         if country_code:
             params['country_code'] = country_code
@@ -3675,14 +3675,14 @@ class HTTPClient:
 
     def create_store_listing(
         self, application_id: Snowflake, sku_id: Snowflake, payload: dict
-    ) -> Response[store.StoreListing]:
+    ) -> Response[store.PrivateStoreListing]:
         return self.request(
             Route('POST', '/store/listings'),
             json={**payload, 'application_id': application_id, 'sku_id': sku_id},
             super_properties_to_track=True,
         )
 
-    def edit_store_listing(self, listing_id: Snowflake, payload: dict) -> Response[store.StoreListing]:
+    def edit_store_listing(self, listing_id: Snowflake, payload: dict) -> Response[store.PrivateStoreListing]:
         return self.request(
             Route('PATCH', '/store/listings/{listing_id}', listing_id=listing_id),
             json=payload,
@@ -3696,7 +3696,7 @@ class HTTPClient:
         country_code: Optional[str] = None,
         payment_source_id: Optional[Snowflake] = None,
         localize: bool = True,
-    ) -> Response[store.SKU]:
+    ) -> Response[store.PrivateSKU]:
         params = {}
         if country_code:
             params['country_code'] = country_code
@@ -3707,7 +3707,7 @@ class HTTPClient:
 
         return self.request(Route('GET', '/store/skus/{sku_id}', sku_id=sku_id), params=params)
 
-    def edit_sku(self, sku_id: Snowflake, payload: dict) -> Response[store.SKU]:
+    def edit_sku(self, sku_id: Snowflake, payload: dict) -> Response[store.PrivateSKU]:
         return self.request(
             Route('PATCH', '/store/skus/{sku_id}', sku_id=sku_id), json=payload, super_properties_to_track=True
         )
