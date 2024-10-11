@@ -3872,6 +3872,12 @@ of :class:`enum.Enum`.
 
     Represents the user's Discord Nitro subscription type.
 
+    .. attribute:: none
+
+        The user does not have a Discord Nitro subscription.
+
+        .. versionadded:: 2.0
+        
     .. attribute:: nitro
 
         Represents the new, full Discord Nitro.
@@ -4305,7 +4311,7 @@ of :class:`enum.Enum`.
     .. attribute:: already_refunded_premium_guild
 
         The purchase is disqualified from a refund because the user has already refunded a premium guild (boosting) purchase.
-        
+
 .. class:: SKUType
 
     Represents the type of a SKU.
