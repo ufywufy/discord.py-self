@@ -3877,7 +3877,7 @@ of :class:`enum.Enum`.
         The user does not have a Discord Nitro subscription.
 
         .. versionadded:: 2.0
-        
+
     .. attribute:: nitro
 
         Represents the new, full Discord Nitro.
@@ -6825,6 +6825,11 @@ User
 .. autoclass:: UserProfile()
     :members:
     :inherited-members:
+
+.. attributetable:: ProfileMetadata
+
+.. autoclass:: ProfileMetadata()
+    :members:
 
 .. attributetable:: ProfileBadge
 
