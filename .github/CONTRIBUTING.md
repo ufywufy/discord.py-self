@@ -8,10 +8,8 @@ The following is a set of guidelines for contributing to the repository. These a
 
 Generally speaking questions are better suited in our resources below.
 
-- The official Telegram: https://t.me/dpy_self_discussions
-- [The FAQ in the documentation](https://discordpy-self.readthedocs.io/en/latest/faq.html)
+- [The official Discord Server](https://discord.gg/ZrCTbkcff5)
 - [The r/discord_selfbots subreddit](https://reddit.com/r/discord_selfbots)
-- [The discussions tab](https://github.com/dolfies/discord.py-self/discussions/categories/help)
 
 Please try your best not to ask questions in our issue tracker. Most of them don't belong there unless they provide value to a larger audience.
 
