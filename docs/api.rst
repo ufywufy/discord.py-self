@@ -8056,6 +8056,14 @@ DirectoryEntry
 
 .. autoclass:: DirectoryEntry()
     :members:
+    
+RoleFlags
+~~~~~~~~~~
+
+.. attributetable:: RoleFlags
+
+.. autoclass:: RoleFlags
+    :members:
 
 ForumTag
 ~~~~~~~~~
