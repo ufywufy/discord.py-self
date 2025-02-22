@@ -16,7 +16,7 @@ These changes have become too numerous to mention, so check out our `docs <https
 - `Rapptz <https://github.com/Rapptz>`_ for the original library this fork is based on. Without it, the project would not exist.
 - `arandomnewaccount <https://www.reddit.com/user/obviouslymymain123/>`_ for help when the project was first started.
 - `dolfies <https://github.com/dolfies>`_ Producer of the original discord.py-self.
-- `voidpro-dev`_ More of his changes were incorporated.
+- `voidpro-dev <https://github.com/voidpro-dev>`_ More of his changes were incorporated.
 
 Key Features
 -------------
