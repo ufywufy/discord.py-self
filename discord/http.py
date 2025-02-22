@@ -4238,7 +4238,7 @@ class HTTPClient:
     def void_payment(self, payment_id: Snowflake) -> Response[None]:
         return self.request(Route('POST', '/users/@me/billing/payments/{payment_id}/void', payment_id=payment_id))
 
-    def refund_payment(self, payment_id: Snowflake, reason: Optional[int] = None) -> Response[None]:
+    def refund_payment(self, payment_id: Snowflake, reason: Optional[int] = None) -> Response[payments.Payment]:
         payload = {'reason': reason}
         return self.request(
             Route('POST', '/users/@me/billing/payments/{payment_id}/refund', payment_id=payment_id), json=payload
