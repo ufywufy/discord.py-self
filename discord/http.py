@@ -637,7 +637,10 @@ class HTTPClient:
                 connector=self.connector, trace_configs=None if self.http_trace is None else [self.http_trace]
             )
         )
-        self.super_properties, self.encoded_super_properties = sp, _ = await utils._get_info(session, self.overwrite_super_properties)
+        proxy = self.proxy
+        proxy_auth = self.proxy_auth
+
+        self.super_properties, self.encoded_super_properties = sp, _ = await utils._get_info(session, self.overwrite_super_properties, proxy, proxy_auth)
         _log.info(
             'useragent: %s, buildnumber: %s, clientversion: %s, nativebuildnumber: %s.',
             sp.get('browser_user_agent'),

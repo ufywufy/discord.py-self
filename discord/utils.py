@@ -75,6 +75,7 @@ from threading import Timer
 import types
 import warnings
 import logging
+import aiohttp
 
 import yarl
 
@@ -1448,7 +1449,7 @@ class ExpiringString(collections.UserString):
         self._timer.cancel()
 
 
-async def _get_info(session: ClientSession, overwrite_properties:dict={}) -> Tuple[Dict[str, Any], str]:
+async def _get_info(session: ClientSession, overwrite_properties:dict={}, proxy: Optional[str] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None) -> Tuple[Dict[str, Any], str]:
     """
     properties = {
         "browser": "Discord Android",
@@ -1499,14 +1500,14 @@ _CLIENT_ASSET_REGEX = re.compile(r'assets/([a-z0-9.]+)\.js')
 _BUILD_NUMBER_REGEX = re.compile(r'build_number:"(\d+)"')
 
 
-async def _get_build_number(session: ClientSession) -> int:
-    async with session.get('https://discord.com/login') as resp:
+async def _get_build_number(session: ClientSession, proxy: Optional[str] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None) -> int:
+    async with session.get('https://discord.com/login', proxy=proxy, proxy_auth=proxy_auth) as resp:
         app = await resp.text()
         assets = _CLIENT_ASSET_REGEX.findall(app)
         if not assets:
             raise RuntimeError('Could not find client asset files')
     for asset in assets[::-1]:
-        async with session.get(f'https://discord.com/assets/{asset}.js') as resp:
+        async with session.get(f'https://discord.com/assets/{asset}.js', proxy=proxy, proxy_auth=proxy_auth) as resp:
             build = await resp.text()
             match = _BUILD_NUMBER_REGEX.search(build)
             if match is None:
@@ -1515,20 +1516,27 @@ async def _get_build_number(session: ClientSession) -> int:
     raise RuntimeError('Could not find client build number')
 
 
-async def _get_native_build_number(session: ClientSession) -> int:
+async def _get_native_build_number(session: ClientSession, proxy: Optional[str] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None) -> int:
     res = await session.get(
         "https://updates.discord.com/distributions/app/manifests/latest?install_id=0&channel=stable&platform=win&arch=x64",
         headers={
             "User-Agent": "Discord-Updater/1",
             "Accept-Encoding": "gzip"
-        }
+        },
+        proxy=proxy,
+        proxy_auth=proxy_auth
     )
     native_build_ver = await res.json()
     return native_build_ver["metadata_version"]
 
 
-async def _get_client_verison(session: ClientSession) -> str:
-    res = await session.get("https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64", allow_redirects=False)
+async def _get_client_verison(session: ClientSession, proxy: Optional[str] = None, proxy_auth: Optional[aiohttp.BasicAuth] = None) -> str:
+    res = await session.get(
+        "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64",
+        proxy=proxy,
+        proxy_auth=proxy_auth,
+        allow_redirects=False
+    )
     main_varsion = res.headers["location"].split("/x64/")[1].split("/DiscordSetup.exe")[0]
     return main_varsion
 
