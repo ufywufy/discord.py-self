@@ -2729,10 +2729,7 @@ class AttachmentFlags(BaseFlags):
         """:class:`bool`: Returns ``True`` if the attachment has been edited using the remix feature."""
         return 1 << 2
 
-    @fill_with_flags()
-
-
-
+@fill_with_flags()
 class RoleFlags(BaseFlags):
     r"""Wraps up the Discord Role flags
 
